@@ -16,6 +16,7 @@ then providing easy to use Dapper extensions for execution quickly turning compl
 - [ ] Generated source file naming clashes. Do we care?
 - [ ] Make the type mapping extensible so we can add new and exciting types like enums
 - [ ] Add a ? to the type syntax to allow for optional fields
+- [ ] Release as a nuget package
 
 ## Features
 
@@ -42,7 +43,7 @@ This source generator automatically converts SQL files into strongly typed query
 
 ```xml
 <ItemGroup>
-  <ProjectReference Include="..\SqlQueryGenerator\SqlQueryGenerator.csproj" 
+  <ProjectReference Include="..\Dipper.Generator.csproj" 
                     OutputItemType="Analyzer" 
                     ReferenceOutputAssembly="false" />
 </ItemGroup>
