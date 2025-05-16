@@ -212,3 +212,43 @@ SQL parameters use the format `@ParameterName:type` where type is mapped to C# t
 | binary, varbinary, image | byte[] |
 | json, jsonb | string |
 
+### Example generation result
+
+```csharp
+namespace Dipper.Generated.SqlQueries
+{
+    public class SelectProductsQuery
+    {
+        public const string Sql = @"
+-- name: SelectProducts
+-- result: Dipper.Tests.Models.Product
+select * from products
+where id = @Id;
+";
+        public class Input
+        {
+            public Guid Id { get; set; }
+        }
+
+        // Result type: Dipper.Tests.Models.Product
+    }
+    
+    /// <summary>
+    /// Extension methods for executing the query with Dapper.
+    /// </summary>
+    public static partial class DapperExtensions
+    {
+        public static IEnumerable<Dipper.Tests.Models.Product> Query(this IDbConnection connection, SelectProductsQuery.Input parameters, IDbTransaction transaction = null, int? commandTimeout = null)
+            => connection.Query<Dipper.Tests.Models.Product>(SelectProductsQuery.Sql, parameters, transaction, commandTimeout: commandTimeout);
+
+        public static Task<IEnumerable<Dipper.Tests.Models.Product>> QueryAsync(this IDbConnection connection, SelectProductsQuery.Input parameters, IDbTransaction transaction = null, int? commandTimeout = null)
+            => return connection.QueryAsync<Dipper.Tests.Models.Product>(SelectProductsQuery.Sql, parameters, transaction, commandTimeout: commandTimeout);
+
+        public static Dipper.Tests.Models.Product QuerySingle(this IDbConnection connection, SelectProductsQuery.Input parameters, IDbTransaction transaction = null, int? commandTimeout = null)
+            => return connection.QuerySingle<Dipper.Tests.Models.Product>(SelectProductsQuery.Sql, parameters, transaction, commandTimeout: commandTimeout);
+
+        public static Task<Dipper.Tests.Models.Product> QuerySingleAsync(this IDbConnection connection, SelectProductsQuery.Input parameters, IDbTransaction transaction = null, int? commandTimeout = null)
+            => connection.QuerySingleAsync<Dipper.Tests.Models.Product>(SelectProductsQuery.Sql, parameters, transaction, commandTimeout: commandTimeout);
+    }
+}
+```
