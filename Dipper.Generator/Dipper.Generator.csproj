@@ -15,7 +15,7 @@
 
         <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-        <RootNamespace>Dips</RootNamespace>
+        <RootNamespace>Dipper.Generator</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup>

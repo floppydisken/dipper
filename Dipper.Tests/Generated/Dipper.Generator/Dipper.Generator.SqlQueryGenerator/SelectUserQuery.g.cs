@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Npgsql;
 using Dapper;
 
-namespace Dips.Generator.SqlQueries
+namespace Dipper.Generated.SqlQueries
 {
     /// <summary>
     /// 
@@ -19,7 +19,7 @@ namespace Dips.Generator.SqlQueries
         /// </summary>
         public const string Sql = @"
 -- name: SelectUser
--- result: Dips.Tests.Models.User
+-- result: Dipper.Tests.Models.Product
 -- Create user record
 SELECT * FROM users
 WHERE (COALESCE id = @Id, TRUE) AND name = @Name;
@@ -43,7 +43,7 @@ WHERE (COALESCE id = @Id, TRUE) AND name = @Name;
 
         }
 
-        // Result type: Dips.Tests.Models.User
+        // Result type: Dipper.Tests.Models.Product
     }
     /// <summary>
     /// Extension methods for executing the query with Dapper.
@@ -53,33 +53,33 @@ WHERE (COALESCE id = @Id, TRUE) AND name = @Name;
         /// <summary>
         /// Executes the SelectUserQuery and returns the results.
         /// </summary>
-        public static IEnumerable<Dips.Tests.Models.User> Query(this IDbConnection connection, SelectUserQuery.Input parameters, IDbTransaction transaction = null, int? commandTimeout = null)
+        public static IEnumerable<Dipper.Tests.Models.Product> Query(this IDbConnection connection, SelectUserQuery.Input parameters, IDbTransaction transaction = null, int? commandTimeout = null)
         {
-            return connection.Query<Dips.Tests.Models.User>(SelectUserQuery.Sql, parameters, transaction, commandTimeout: commandTimeout);
+            return connection.Query<Dipper.Tests.Models.Product>(SelectUserQuery.Sql, parameters, transaction, commandTimeout: commandTimeout);
         }
 
         /// <summary>
         /// Executes the SelectUserQuery asynchronously and returns the results.
         /// </summary>
-        public static Task<IEnumerable<Dips.Tests.Models.User>> QueryAsync(this IDbConnection connection, SelectUserQuery.Input parameters, IDbTransaction transaction = null, int? commandTimeout = null)
+        public static Task<IEnumerable<Dipper.Tests.Models.Product>> QueryAsync(this IDbConnection connection, SelectUserQuery.Input parameters, IDbTransaction transaction = null, int? commandTimeout = null)
         {
-            return connection.QueryAsync<Dips.Tests.Models.User>(SelectUserQuery.Sql, parameters, transaction, commandTimeout: commandTimeout);
+            return connection.QueryAsync<Dipper.Tests.Models.Product>(SelectUserQuery.Sql, parameters, transaction, commandTimeout: commandTimeout);
         }
 
         /// <summary>
         /// Executes the SelectUserQuery and returns a single result.
         /// </summary>
-        public static Dips.Tests.Models.User QuerySingle(this IDbConnection connection, SelectUserQuery.Input parameters, IDbTransaction transaction = null, int? commandTimeout = null)
+        public static Dipper.Tests.Models.Product QuerySingle(this IDbConnection connection, SelectUserQuery.Input parameters, IDbTransaction transaction = null, int? commandTimeout = null)
         {
-            return connection.QuerySingle<Dips.Tests.Models.User>(SelectUserQuery.Sql, parameters, transaction, commandTimeout: commandTimeout);
+            return connection.QuerySingle<Dipper.Tests.Models.Product>(SelectUserQuery.Sql, parameters, transaction, commandTimeout: commandTimeout);
         }
 
         /// <summary>
         /// Executes the SelectUserQuery asynchronously and returns a single result.
         /// </summary>
-        public static Task<Dips.Tests.Models.User> QuerySingleAsync(this IDbConnection connection, SelectUserQuery.Input parameters, IDbTransaction transaction = null, int? commandTimeout = null)
+        public static Task<Dipper.Tests.Models.Product> QuerySingleAsync(this IDbConnection connection, SelectUserQuery.Input parameters, IDbTransaction transaction = null, int? commandTimeout = null)
         {
-            return connection.QuerySingleAsync<Dips.Tests.Models.User>(SelectUserQuery.Sql, parameters, transaction, commandTimeout: commandTimeout);
+            return connection.QuerySingleAsync<Dipper.Tests.Models.Product>(SelectUserQuery.Sql, parameters, transaction, commandTimeout: commandTimeout);
         }
     }
 }

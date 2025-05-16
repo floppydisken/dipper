@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dips.Generator", "Dips.Generator\Dips.Generator.csproj", "{46FC7C6D-8660-458C-A6AE-50F46EB219BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dipper.Generator", "Dipper.Generator\Dipper.Generator.csproj", "{46FC7C6D-8660-458C-A6AE-50F46EB219BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dips.Tests", "Dips.Tests\Dips.Tests.csproj", "{0BD30CF1-F7CA-46E3-8052-38F2244F1B3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dipper.Tests", "Dipper.Tests\Dipper.Tests.csproj", "{0BD30CF1-F7CA-46E3-8052-38F2244F1B3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

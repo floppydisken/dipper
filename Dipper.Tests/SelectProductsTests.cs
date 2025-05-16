@@ -1,7 +1,7 @@
-using Dips.Generator.SqlQueries;
+using Dipper.Generated.SqlQueries;
 using Npgsql;
 
-namespace Dips.Tests;
+namespace Dipper.Tests;
 
 public class SelectProductsTests
 {

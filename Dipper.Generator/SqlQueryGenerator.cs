@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace Dips;
+namespace Dipper.Generator;
 
 [Generator]
 public class SqlQueryGenerator : IIncrementalGenerator
@@ -86,7 +86,7 @@ public class SqlQueryGenerator : IIncrementalGenerator
         sourceBuilder.AppendLine("using Npgsql;");
         sourceBuilder.AppendLine("using Dapper;");
         sourceBuilder.AppendLine();
-        sourceBuilder.AppendLine("namespace Dips.Generator.SqlQueries");
+        sourceBuilder.AppendLine("namespace Dipper.Generated.SqlQueries");
         sourceBuilder.AppendLine("{");
 
         // Generate the Query class
@@ -113,12 +113,6 @@ public class SqlQueryGenerator : IIncrementalGenerator
         {
             sourceBuilder.AppendLine($"        // Result type: {resultType}");
         }
-
-        // Generate where conditions class if the SQL contains WHERE
-        //if (sqlContent.Contains("WHERE") || sqlContent.Contains("where"))
-        //{
-        //    GenerateWhereClass(sourceBuilder);
-        //}
 
         // Close the main query class
         sourceBuilder.AppendLine("    }");
@@ -154,71 +148,6 @@ public class SqlQueryGenerator : IIncrementalGenerator
         sourceBuilder.AppendLine();
     }
 
-    private void GenerateWhereClass(StringBuilder sourceBuilder)
-    {
-        sourceBuilder.AppendLine("        /// <summary>");
-        sourceBuilder.AppendLine("        /// Where conditions for the query.");
-        sourceBuilder.AppendLine("        /// </summary>");
-        sourceBuilder.AppendLine("        public class Where");
-        sourceBuilder.AppendLine("        {");
-        sourceBuilder.AppendLine("            private readonly StringBuilder _whereClause = new StringBuilder();");
-        sourceBuilder.AppendLine(
-            "            private readonly Dictionary<string, object> _parameters = new Dictionary<string, object>();");
-        sourceBuilder.AppendLine("            private bool _hasCondition = false;");
-        sourceBuilder.AppendLine();
-        sourceBuilder.AppendLine("            /// <summary>");
-        sourceBuilder.AppendLine("            /// Adds a condition to the where clause if the value is not null.");
-        sourceBuilder.AppendLine("            /// </summary>");
-        sourceBuilder.AppendLine(
-            "            public Where AddConditionIfNotNull<T>(string fieldName, string operation, T value, string paramName = null)");
-        sourceBuilder.AppendLine("            {");
-        sourceBuilder.AppendLine("                if (value != null)");
-        sourceBuilder.AppendLine("                {");
-        sourceBuilder.AppendLine("                    string pName = paramName ?? $\"p{_parameters.Count}\";");
-        sourceBuilder.AppendLine("                    if (!_hasCondition)");
-        sourceBuilder.AppendLine("                    {");
-        sourceBuilder.AppendLine("                        _whereClause.Append(\" WHERE \");");
-        sourceBuilder.AppendLine("                        _hasCondition = true;");
-        sourceBuilder.AppendLine("                    }");
-        sourceBuilder.AppendLine("                    else");
-        sourceBuilder.AppendLine("                    {");
-        sourceBuilder.AppendLine("                        _whereClause.Append(\" AND \");");
-        sourceBuilder.AppendLine("                    }");
-        sourceBuilder.AppendLine();
-        sourceBuilder.AppendLine("                    _whereClause.Append($\"{fieldName} {operation} @{pName}\");");
-        sourceBuilder.AppendLine("                    _parameters.Add(pName, value);");
-        sourceBuilder.AppendLine("                }");
-        sourceBuilder.AppendLine("                return this;");
-        sourceBuilder.AppendLine("            }");
-        sourceBuilder.AppendLine();
-        sourceBuilder.AppendLine("            /// <summary>");
-        sourceBuilder.AppendLine(
-            "            /// Adds a condition to the where clause if the value satisfies a predicate.");
-        sourceBuilder.AppendLine("            /// </summary>");
-        sourceBuilder.AppendLine(
-            "            public Where AddConditionIf<T>(string fieldName, string operation, T value, Func<T, bool> predicate, string paramName = null)");
-        sourceBuilder.AppendLine("            {");
-        sourceBuilder.AppendLine("                if (predicate(value))");
-        sourceBuilder.AppendLine("                {");
-        sourceBuilder.AppendLine(
-            "                    return AddConditionIfNotNull(fieldName, operation, value, paramName);");
-        sourceBuilder.AppendLine("                }");
-        sourceBuilder.AppendLine("                return this;");
-        sourceBuilder.AppendLine("            }");
-        sourceBuilder.AppendLine();
-        sourceBuilder.AppendLine("            /// <summary>");
-        sourceBuilder.AppendLine("            /// Gets the WHERE clause SQL.");
-        sourceBuilder.AppendLine("            /// </summary>");
-        sourceBuilder.AppendLine("            public string GetSql() => _whereClause.ToString();");
-        sourceBuilder.AppendLine();
-        sourceBuilder.AppendLine("            /// <summary>");
-        sourceBuilder.AppendLine("            /// Gets the parameters for the WHERE clause.");
-        sourceBuilder.AppendLine("            /// </summary>");
-        sourceBuilder.AppendLine("            public object GetParameters() => _parameters;");
-        sourceBuilder.AppendLine("        }");
-        sourceBuilder.AppendLine();
-    }
-
     private void GenerateDapperExtensions(StringBuilder sourceBuilder, string className, string resultType)
     {
         sourceBuilder.AppendLine("    /// <summary>");
@@ -247,22 +176,6 @@ public class SqlQueryGenerator : IIncrementalGenerator
         sourceBuilder.AppendLine("        }");
         sourceBuilder.AppendLine();
 
-        // Extension method for query execution with WHERE clause
-        //sourceBuilder.AppendLine("        /// <summary>");
-        //sourceBuilder.AppendLine(
-        //    $"        /// Executes the {className} with where conditions and returns the results.");
-        //sourceBuilder.AppendLine("        /// </summary>");
-        //sourceBuilder.AppendLine(
-        //    $"        public static {returnType} Execute{className}(this IDbConnection connection, {className}.Input parameters, {className}.Where whereConditions, IDbTransaction transaction = null, int? commandTimeout = null)");
-        //sourceBuilder.AppendLine("        {");
-        //sourceBuilder.AppendLine("            var sql = $\"{" + className + ".Sql}{whereConditions.GetSql()}\";");
-        //sourceBuilder.AppendLine("            var combinedParams = new DynamicParameters(parameters);");
-        //sourceBuilder.AppendLine("            combinedParams.AddDynamicParams(whereConditions.GetParameters());");
-        //sourceBuilder.AppendLine(
-        //    $"            return connection.Query{(string.IsNullOrEmpty(resultType) ? "" : $"<{resultType}>")}(sql, combinedParams, transaction, commandTimeout: commandTimeout);");
-        //sourceBuilder.AppendLine("        }");
-        //sourceBuilder.AppendLine();
-
         // Async extension method
         sourceBuilder.AppendLine("        /// <summary>");
         sourceBuilder.AppendLine($"        /// Executes the {className} asynchronously and returns the results.");
@@ -274,22 +187,6 @@ public class SqlQueryGenerator : IIncrementalGenerator
             $"            return connection.QueryAsync{(string.IsNullOrEmpty(resultType) ? "" : $"<{resultType}>")}({className}.Sql, parameters, transaction, commandTimeout: commandTimeout);");
         sourceBuilder.AppendLine("        }");
         sourceBuilder.AppendLine();
-
-        // Async extension method with WHERE clause
-        //sourceBuilder.AppendLine("        /// <summary>");
-        //sourceBuilder.AppendLine(
-        //    $"        /// Executes the {className} asynchronously with where conditions and returns the results.");
-        //sourceBuilder.AppendLine("        /// </summary>");
-        //sourceBuilder.AppendLine(
-        //    $"        public static {asyncReturnType} Execute{className}Async(this IDbConnection connection, {className}.Input parameters, {className}.Where whereConditions, IDbTransaction transaction = null, int? commandTimeout = null)");
-        //sourceBuilder.AppendLine("        {");
-        //sourceBuilder.AppendLine("            var sql = $\"{" + className + ".Sql}{whereConditions.GetSql()}\";");
-        //sourceBuilder.AppendLine("            var combinedParams = new DynamicParameters(parameters);");
-        //sourceBuilder.AppendLine("            combinedParams.AddDynamicParams(whereConditions.GetParameters());");
-        //sourceBuilder.AppendLine(
-        //    $"            return connection.QueryAsync{(string.IsNullOrEmpty(resultType) ? "" : $"<{resultType}>")}(sql, combinedParams, transaction, commandTimeout: commandTimeout);");
-        //sourceBuilder.AppendLine("        }");
-        //sourceBuilder.AppendLine();
 
         // Single result extension method
         sourceBuilder.AppendLine("        /// <summary>");
@@ -343,19 +240,14 @@ public class SqlQueryGenerator : IIncrementalGenerator
 
     private string MapSqlTypeToCSharp(string sqlType)
     {
-        if (SqlToCSharpTypeMap.TryGetValue(sqlType.ToLower(), out var csharpType))
-        {
-            return csharpType;
-        }
-
-        // Default to string if type mapping not found
-        return "string";
+        return SqlToCSharpTypeMap.GetValueOrDefault(sqlType.ToLower(), "string");
     }
 
+    /// <summary>
+    /// Replace parameters in the format @Name:type with @Name for actual SQL execution
+    /// </summary>
     private string CleanupSqlForConstant(string sql)
     {
-        // return sql;
-        // Replace parameters in the format @Name:type with @Name for actual SQL execution
         return Regex.Replace(sql, @"@(\w+):(\w+)", m => $"@{m.Groups[1].Value}");
     }
 }

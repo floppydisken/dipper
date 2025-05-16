@@ -76,12 +76,12 @@ WHERE id = @Id:uuid
 
 When building dynamic SQL queries with optional filter parameters, we often need to handle cases where some parameters may be NULL or unspecified. The traditional approach of concatenating SQL strings can lead to complex, error-prone code:
 
-```javascript
+```csharp
 // Problematic approach
-let sql = "SELECT * FROM products WHERE 1=1";
-if (category !== null) sql += " AND category = '" + category + "'";
-if (maxPrice !== null) sql += " AND price <= " + maxPrice;
-if (color !== null) sql += " AND color = '" + color + "'";
+var sql = "SELECT * FROM products WHERE 1=1";
+if (category != null) sql += " AND category = @Category";
+if (maxPrice != null) sql += " AND price <= @MaxPrice";
+if (color != null) sql += " AND color = @Color";
 // More conditions...
 ```
 
@@ -125,22 +125,20 @@ You can combine AND and OR conditions for sophisticated filtering:
 SELECT * FROM products
 WHERE 
   -- These conditions are TRUE when the parameter is NULL
-  (COALESCE(category = $1, TRUE)) AND
-  (COALESCE(price <= $2, TRUE)) AND
+  (COALESCE(category = @Category:text, TRUE)) AND
+  (COALESCE(price <= @Price:money, TRUE)) AND
   
   -- At least one of these must be TRUE (if all parameters are NULL, no products match)
   (
-    (COALESCE(color = $3, FALSE)) OR 
-    (COALESCE(brand = $4, FALSE)) OR
-    (COALESCE(on_sale = $5, FALSE))
+    (COALESCE(color = @Color:text, FALSE)) OR 
+    (COALESCE(brand = @Brand:text, FALSE)) OR
+    (COALESCE(on_sale = @OnSale:bool, FALSE))
   )
 ```
 
 #### Benefits
 
-- **"Clean-enough", maintainable code**: Single SQL query without complex string concatenation
-- **SQL injection protection**: Uses parameterized queries
-- **Performance**: Allows PostgreSQL to optimize the query execution plan
+- **"Clean-enough", maintainable code**: Single SQL query without complex string concatenation without introducing new templating syntax
 - **Readability**: Makes the intention of optional filtering clear. The caveat being that COALESCE is not immediately obvious
 
 #### When to Use
@@ -201,93 +199,3 @@ SQL parameters use the format `@ParameterName:type` where type is mapped to C# t
 | binary, varbinary, image | byte[] |
 | json, jsonb | string |
 
-## Example Generated Output
-
-For the SQL file example above, the generator will create:
-
-```csharp
-namespace SqlQueries
-{
-    public static class GetUsersQuery
-    {
-        private static string RawSql => @"
--- name: GetUsers
--- result: IEnumerable<Models.UserEntity>
--- Query users with optional filtering
-SELECT * FROM users
-WHERE 1=1
-{% if SearchTerm != "" %}
-  AND (username LIKE '%' || @SearchTerm:text || '%' 
-  OR email LIKE '%' || @SearchTerm:text || '%')
-{% endif %}
-{% if IsActive != null %}
-  AND is_active = @IsActive:boolean
-{% endif %}
-ORDER BY username;";
-
-        public class Input
-        {
-            /// <summary>
-            /// Parameter SearchTerm (used in conditional blocks)
-            /// </summary>
-            public string SearchTerm { get; set; }
-            
-            /// <summary>
-            /// Parameter IsActive (used in conditional blocks)
-            /// </summary>
-            public bool? IsActive { get; set; }
-        }
-
-        private static string ProcessSql(Input parameters)
-        {
-            var sql = RawSql;
-            
-            // Process conditional blocks
-            if (!(parameters.SearchTerm != ""))
-            {
-                sql = Regex.Replace(sql, @"\{% if SearchTerm != "" %\}([\s\S]*?)\{% endif %\}", "", RegexOptions.Singleline);
-            }
-            else
-            {
-                sql = Regex.Replace(sql, @"\{% if SearchTerm != "" %\}([\s\S]*?)\{% endif %\}", "$1", RegexOptions.Singleline);
-            }
-            
-            if (!(parameters.IsActive != null))
-            {
-                sql = Regex.Replace(sql, @"\{% if IsActive != null %\}([\s\S]*?)\{% endif %\}", "", RegexOptions.Singleline);
-            }
-            else
-            {
-                sql = Regex.Replace(sql, @"\{% if IsActive != null %\}([\s\S]*?)\{% endif %\}", "$1", RegexOptions.Singleline);
-            }
-            
-            // Clean up conditional markers
-            sql = Regex.Replace(sql, @"\{\{.*?\}\}", "");
-            sql = Regex.Replace(sql, @"\{%.*?%\}", "");
-            
-            // Replace parameter type annotations with standard SQL parameters
-            sql = Regex.Replace(sql, @"@([a-zA-Z0-9_]+):[a-zA-Z0-9_]+", "@$1");
-            
-            return sql;
-        }
-
-        public static IEnumerable<Models.UserEntity> Execute(this IDbConnection connection, Input parameters, 
-            IDbTransaction transaction = null, int? commandTimeout = null)
-        {
-            var sql = ProcessSql(parameters);
-            return connection.Query<Models.UserEntity>(sql, parameters, transaction, commandTimeout: commandTimeout);
-        }
-
-        public static async Task<IEnumerable<Models.UserEntity>> ExecuteAsync(this IDbConnection connection, Input parameters, 
-            IDbTransaction transaction = null, int? commandTimeout = null)
-        {
-            var sql = ProcessSql(parameters);
-            return await connection.QueryAsync<Models.UserEntity>(sql, parameters, transaction, commandTimeout: commandTimeout);
-        }
-        
-        public static string GetSql(Input parameters)
-        {
-            return ProcessSql(parameters);
-        }
-    }
-}

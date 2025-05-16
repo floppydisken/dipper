@@ -1,4 +1,4 @@
 -- name: SelectProducts
--- result: Dips.Tests.Models.Product
+-- result: Dipper.Tests.Models.Product
 select * from products
 where id = @Id:uuid;

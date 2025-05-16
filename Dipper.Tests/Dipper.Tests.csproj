@@ -5,8 +5,11 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
+        
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
+        
+        <RootNamespace>Dipper.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -33,7 +36,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\Dips.Generator\Dips.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+      <ProjectReference Include="..\Dipper.Generator\Dipper.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
     
 </Project>

@@ -1,4 +1,4 @@
-namespace Dips.Tests.Models;
+namespace Dipper.Tests.Models;
 
 public record User
 {
