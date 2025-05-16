@@ -1,6 +1,20 @@
-# SQL Query Generator for .NET
+# Dipper: The companion Dapper has always needed
 
+A true companion to Dapper for that near-native-sql experience. 
 This source generator automatically converts SQL files into strongly typed query classes for use with Dapper.
+
+The generator itself does as little as possible and lets the powerful language of SQL express itself.
+
+This project is an experiment to explore writing .sql files and "compiling" those into strongly typed source files, 
+then providing easy to use Dapper extensions for execution quickly turning complicated SQL calls into simple declarative code.
+
+## TODO
+- [ ] Is COALESCE enough to handle complex cases
+- [ ] How do we handle deep hydration like the lovely EFCore (can we do it elegantly)? 
+- [ ] How do we strongly type database column names. Figure out a strategy for one-source-of-truth for column names, 
+    so we can discover when a model field does not match the model field.
+- [ ] Generated source file naming clashes. Do we care?
+- [ ] Make the type mapping extensible so we can add new and exciting types like enums
 
 ## Features
 
@@ -138,7 +152,8 @@ WHERE
 
 #### Benefits
 
-- **"Clean-enough", maintainable code**: Single SQL query without complex string concatenation without introducing new templating syntax
+- **"Clean-enough", maintainable code**: Single SQL query without complex string concatenation and without introducing 
+    new templating syntax for conditional where fields
 - **Readability**: Makes the intention of optional filtering clear. The caveat being that COALESCE is not immediately obvious
 
 #### When to Use
@@ -148,10 +163,7 @@ This approach is particularly useful for:
 - API endpoints that accept optional query parameters
 - Reports with configurable filtering criteria
 
-#### Limitations
-
-- Some database query planners might not optimize these queries as efficiently as hand-tailored ones
-- For extremely complex filtering logic, stored procedures might be more appropriate
+But can be used for any complexity of SQL queries
 
 ### 2. Add SQL Files to Your Project
 
@@ -176,7 +188,6 @@ Make sure to include the SQL files in your project file:
   <AdditionalFiles Include="**/*.sql" />
 </ItemGroup>
 ```
-
 
 ### Parameter Type Mapping
 
