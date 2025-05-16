@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dips.Generator", "Dips.Generator\Dips.Generator.csproj", "{46FC7C6D-8660-458C-A6AE-50F46EB219BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dips.Tests", "Dips.Tests\Dips.Tests.csproj", "{0BD30CF1-F7CA-46E3-8052-38F2244F1B3B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{46FC7C6D-8660-458C-A6AE-50F46EB219BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46FC7C6D-8660-458C-A6AE-50F46EB219BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46FC7C6D-8660-458C-A6AE-50F46EB219BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46FC7C6D-8660-458C-A6AE-50F46EB219BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BD30CF1-F7CA-46E3-8052-38F2244F1B3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BD30CF1-F7CA-46E3-8052-38F2244F1B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD30CF1-F7CA-46E3-8052-38F2244F1B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BD30CF1-F7CA-46E3-8052-38F2244F1B3B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
