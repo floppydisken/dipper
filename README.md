@@ -15,6 +15,7 @@ then providing easy to use Dapper extensions for execution quickly turning compl
     so we can discover when a model field does not match the model field.
 - [ ] Generated source file naming clashes. Do we care?
 - [ ] Make the type mapping extensible so we can add new and exciting types like enums
+- [ ] Add a ? to the type syntax to allow for optional fields
 
 ## Features
 
@@ -171,13 +172,13 @@ Create a SQL file with metadata comments and optional conditional blocks:
 
 ```sql
 -- name: GetProducts
--- result: IEnumerable<Models.ProductView>
+-- result: Models.ProductView
 -- Query users with optional filtering
 SELECT * FROM products
 WHERE 
-  (COALESCE(category = @Category:text, TRUE)) AND
-  (COALESCE(price <= @Price:money, TRUE)) AND
-  (COALESCE(color = @Color:text, TRUE))
+  COALESCE(category = @Category:text, TRUE) AND
+  COALESCE(price <= @Price:money, TRUE) AND
+  COALESCE(color = @Color:text, TRUE)
 ORDER BY name
 ```
 
