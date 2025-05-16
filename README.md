@@ -1,4 +1,4 @@
-# Dipper: The companion Dapper has always needed
+# Dipper: The companion Dapper didn't know it needed
 
 A true companion to Dapper for that near-native-sql experience. 
 This source generator automatically converts SQL files into strongly typed query classes for use with Dapper.
